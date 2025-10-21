@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Labs Co. | Ecossistema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configuração do Tailwind CSS
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'royal-bg': 'var(--bg-color)',
+              'royal-card': 'var(--card-color)',
+              'royal-accent': 'var(--accent-color)',
+              'royal-text': 'var(--text-color)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Variáveis de Tema Padrão (Dark Mode: Esmeralda/Verde) */
+      :root {
+        --bg-color: #0d1117;
+        --card-color: #161b22;
+        --accent-color: #06D6A0;
+        --accent-color-rgb: 6, 214, 160; /* Usado para sombra */
+        --text-color: #c9d1d9;
+        --header-text-color: #ffffff;
+        --border-color: #30363d;
+        --nested-card-bg: rgba(13,17,23,0.5);
+        --synergy-header-bg: #1f242c;
+      }
+      
+      .light-mode {
+        --bg-color: #f0f2f5;
+        --card-color: #ffffff;
+        --accent-color: #007aff;
+        --accent-color-rgb: 0, 122, 255;
+        --text-color: #1d2129;
+        --header-text-color: #1d2129;
+        --border-color: #dee2e6;
+        --nested-card-bg: rgba(222, 226, 230, 0.5);
+        --synergy-header-bg: #e9ecef;
+      }
+
+      /* Ajustes gerais */
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Inter', sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      h1, h2, h3, h4, h5, h6 { color: var(--header-text-color); }
+
+      .vertical-card {
+        background-color: var(--card-color);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      }
+
+      .vertical-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-color);
+        box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.2);
+      }
+
+      /* Estilo base para sub-setores */
+      .sub-setor-card {
+        background-color: var(--card-color);
+        border: 1px solid var(--border-color);
+        transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
+      }
+      
+       .sub-setor-card:hover {
+         border-color: var(--accent-color);
+       }
+       
+      .sub-setor-card.active {
+        border-color: var(--accent-color);
+        background-color: var(--card-color);
+        transform: scale(1.05);
+      }
+
+      /* Estilo para os cartões aninhados */
+      .nested-card {
+        background-color: var(--nested-card-bg);
+      }
+      
+      .accordion-arrow {
+        transition: transform 0.3s ease;
+      }
+
+      .accent-text { color: var(--accent-color); }
+
+      /* Abas de Navegação */
+      .tab-button {
+        border-bottom: 3px solid transparent;
+        transition: border-bottom-color 0.2s;
+        color: #8b949e;
+      }
+       .light-mode .tab-button {
+         color: #657786;
+       }
+      .tab-button.active {
+        border-bottom-color: var(--accent-color);
+        color: var(--header-text-color);
+      }
+
+      /* RLP - Abas Aninhadas */
+      .rlp-tab-button {
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          transition: background-color 0.2s;
+      }
+      .rlp-tab-button.active {
+          background-color: var(--accent-color);
+          color: #ffffff;
+          font-weight: 700;
+      }
+
+      /* Estilos para a Tabela de Sinergia */
+      .synergy-table {
+          border-spacing: 0;
+          border-radius: 12px;
+          overflow: hidden;
+      }
+      .synergy-table th {
+          background-color: var(--synergy-header-bg);
+          border-bottom: 2px solid var(--border-color);
+      }
+      .synergy-table td {
+          border-bottom: 1px solid var(--border-color);
+          background-color: var(--card-color);
+      }
+      .synergy-table tr:last-child td {
+          border-bottom: none;
+      }
+      
+      .text-white\/80 {
+          color: rgba(255,255,255,0.8);
+      }
+      .light-mode .text-white\/80 {
+          color: rgba(29, 33, 41, 0.8);
+      }
+      
+      /* Ícones de Tema */
+      #theme-toggle .sun-icon { display: none; }
+      #theme-toggle .moon-icon { display: block; }
+      .light-mode #theme-toggle .sun-icon { display: block; }
+      .light-mode #theme-toggle .moon-icon { display: none; }
+      
+      .light-mode #theme-toggle {
+        border-color: var(--border-color);
+      }
+       .light-mode #theme-toggle:hover {
+        background-color: #e9ecef;
+      }
+
+    </style>
+</head>
+<body class="bg-royal-bg">
+
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <header class="mb-8 border-b pb-4 border-gray-700 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-extrabold">
+                <span class="accent-text">Royal Labs</span><span class="text-white/80"> Co.</span>
+            </h1>
+        </div>
+        <div class="flex items-center space-x-4">
+             <p class="text-gray-400 mt-1 text-sm text-right hidden sm:block">Ecossistema de Inovação,<br>Web3 e Lifestyle</p>
+            <button id="theme-toggle" class="p-2 rounded-lg border border-gray-600 hover:bg-gray-700 transition-colors" onclick="app.toggleTheme()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon h-5 w-5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon h-5 w-5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex border-b border-gray-700 mb-8 space-x-6">
+        <button id="tab-btn-publicas" class="tab-button active pb-2 text-lg font-semibold" onclick="app.setActiveTab('publicas')">
+            Verticais Públicas
+        </button>
+        <button id="tab-btn-internas" class="tab-button pb-2 text-lg font-semibold" onclick="app.setActiveTab('internas')">
+            Verticais Internas
+        </button>
+        <button id="tab-btn-synergy" class="tab-button pb-2 text-lg font-semibold" onclick="app.setActiveTab('synergy')">
+            Sinergia Estratégica
+        </button>
+    </div>
+
+    <div id="main-content-container">
+        <!-- O conteúdo será renderizado aqui pelo JavaScript -->
+    </div>
+</div>
+
+<footer class="bg-royal-card border-t border-gray-700 mt-12 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
+        <p class="font-bold text-lg mb-2 accent-text">Royal Labs Co.</p>
+        <p class="mb-1">&copy; 2025 Royal Labs Co.</p>
+        <p>(Entidade Legal: Royal Labs Group - CNPJ). Todos os direitos reservados.</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Dados de todo o ecossistema, agora separados por tipo de vertente
+    const ECOSYSTEM_DATA = {
+        publicas: {
+            'Royal Crypto Desk': {
+                setor: 'Performance, Caixa e Funil de Ativação',
+                proposta: 'A Royal Crypto Desk é o braço de trading proprietário do ecossistema. Seu principal objetivo é gerar receita a partir de taxas de desafio e, estrategicamente, adquirir clientes ativos para o Royal Bankless.',
+                subSetores: [
+                    { nome: 'Plataforma de Desafios', icon: '🏆', focoPrincipal: 'Avaliação de Traders', propostaValor: 'Oferece planos de desafio pagos para que traders qualificados demonstrem habilidade.', objetivoEstrategico: 'Geração de Receita: Receita de alto volume via taxas de inscrição e recompras (sem exposição ao mercado).', mitigacaoRisco: 'Risco Zero de Liquidez: Uso de contas DEMO via API da Bybit; capital real só é alocado (limitado) após a aprovação.' },
+                    { nome: 'Mesa de Trading Global', icon: '📈', focoPrincipal: 'Ganhos 80/20', propostaValor: 'Alocação de capital da Desk (contas demo) aos traders aprovados para obter lucro real.', objetivoEstrategico: 'Performance e Marca: Atrair talentos globais e capturar 20% do lucro gerado pelos melhores traders.', mitigacaoRisco: 'Regras estritas de drawdown e saque (ex: 5% de saque, depois reset) protegem o capital alocado.' },
+                    { nome: 'Nicho Cripto (Bybit API)', icon: '🔗', focoPrincipal: 'Foco em Criptoativos', propostaValor: 'Oferecer oportunidades e desafios em um mercado de alta volatilidade e menos saturado que o Forex.', objetivoEstrategico: 'Vantagem Competitiva: Dominar o nicho de Prop-Firm em cripto, explorando o alto potencial de lucro.', mitigacaoRisco: 'Parceria com grandes exchanges (Bybit) para garantir liquidez e estabilidade da API.' },
+                    { nome: 'Comunidade Free', icon: '📢', focoPrincipal: 'Engajamento e Tráfego', propostaValor: 'Geração de movimento, troca de informações e prova social sem custo.', objetivoEstrategico: 'Lead Magnet: Converter curiosos em leads qualificados que migram para os Desafios Pagos.', mitigacaoRisco: 'Não gera custos operacionais significativos.' }
+                ]
+            },
+            'Royal Academy': {
+                setor: 'Educação e Comunidades',
+                proposta: 'Formação de traders e investidores com alto nível de engajamento.',
+                synergyHtml: `
+                    <div class="mt-8 bg-royal-card p-6 rounded-xl border border-gray-700">
+                        <h4 class="text-2xl font-bold mb-4">Conexões e Sinergia da Royal Academy</h4>
+                        <p class="text-gray-400 mb-6">A Royal Academy não opera isoladamente; ela é um funil estratégico para outras verticais.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Crypto Desk:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Funil de Tráfego:</strong> A Academy educa e qualifica traders, que são posteriormente direcionados para os desafios da Crypto Desk.</li>
+                                    <li><strong>Suporte Pós-Desafio:</strong> Oferece cursos avançados para traders da Desk que buscam aprimorar suas estratégias.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Bankless:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Educação em Web3/DeFi:</strong> Ensina como usar a Royal Wallet, Royal Card, Royal Earn, etc., impulsionando a adoção do Bankless.</li>
+                                    <li><strong>Consciência de RLP:</strong> Introduz o conceito do Royal Protocol (RLP) e sua utilidade, preparando a comunidade para o lançamento.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com RL.Emikate/Mídia (CORE):</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Produção de Conteúdo:</strong> Fornece o conteúdo educativo para as campanhas de marketing e geração de leads do Emikate/Mídia.</li>
+                                    <li><strong>Geração de Leads:</strong> Recebe o tráfego gerado pelo Emikate e o converte em membros da comunidade (gratuitos e pagos).</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal IA Labs:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Análise de Desempenho:</strong> A IA pode analisar o progresso dos alunos e sugerir conteúdos personalizados.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Ventures:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Oportunidades Exclusivas:</strong> Membros da Confraria Crypto podem ter early access a projetos ou oportunidades de investimento da Ventures.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                subSetores: [
+                    { nome: 'Área de Membros (Tutoriais)', icon: '💻', focoPrincipal: 'Tutoriais e Conteúdo Básico', propostaValor: 'Oferece material educacional introdutório sobre cripto e trading para novos usuários.', objetivoFunil: 'Aquisição de Leads: Converter visitantes em membros da comunidade.', conexoesEstrategicas: 'RL.Emikate/Mídia (Tráfego), Royal Crypto Desk (Introdução).' },
+                    { nome: 'Royal Club (Baixo Ticket)', icon: '📚', focoPrincipal: 'Comunidade Exclusiva', propostaValor: 'Conteúdo aprofundado, análises diárias, sinais de mercado e acesso a mentores (Nível 1).', objetivoFunil: 'Engajamento e Qualificação: Monetizar o interesse inicial e qualificar leads para produtos mais avançados.', conexoesEstrategicas: 'Royal Crypto Desk (Estratégias), Royal Bankless (Conhecimento de uso).' },
+                    { nome: 'Cursos e Mentorias Completas', icon: '🎓', focoPrincipal: 'Formação Completa', propostaValor: 'Trilha de aprendizado estruturada, módulos aprofundados, suporte direto e certificação.', objetivoFunil: 'Especialização e Receita: Preparar o trader/investidor para operar na Crypto Desk e usar o Bankless com confiança.', conexoesEstrategicas: 'Royal Crypto Desk (Profissionalização), Royal Bankless (Uso avançado).' },
+                    { nome: 'Royal Circle (Cursos/Mentorias)', icon: '🤝', focoPrincipal: 'Interação P2P e Mentoria', propostaValor: 'Comunidade para alunos de cursos/mentorias, com troca de experiências, workshops e acesso a especialistas.', objetivoFunil: 'Retenção e Fidelidade: Criar um senso de pertencimento e networking, incentivando a permanência no ecossistema.', conexoesEstrategicas: 'RL.Team (Gestão de comunidades), Royal Bankless (Novos produtos).' },
+                    { nome: 'Confraria Crypto (Mastermind)', icon: '👑', focoPrincipal: 'Acesso Elite', propostaValor: 'Grupo seleto de High-Ticket com acesso a informações exclusivas, early access e oportunidades de investimento.', objetivoFunil: 'Exclusividade e Oportunidades: Fidelizar o topo da pirâmide, oferecendo valor e networking inigualáveis.', conexoesEstrategicas: 'Royal Ventures (Early Access), Royal Token Labs (Oportunidades de RWA).' },
+                ]
+            },
+            'Royal Bankless': {
+                setor: 'Core Business e Infraestrutura Web3',
+                proposta: 'Braço Fintech e Web3 da Royal Labs, projetado para reter e monetizar o cliente, fornecendo serviços financeiros modernos e tokenizados.',
+                subSetores: [
+                    // Achatado para o layout de galeria
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Card', icon: '💳', focoPrincipal: 'Crypto Card (Físico e Digital)', propostaValor: 'Permite gastos diários e conversão automática Crypto/Fiat, gerando spread e taxas para o Bankless.', sinergia: 'Usa a infraestrutura RL.Legal (Compliance) e RL.FinCore (Controle de Spread).' },
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Credit', icon: '🤝', focoPrincipal: 'Cartão de Crédito (BRL)', propostaValor: 'Oferta de crédito via parceria white-label com banco tradicional (Crédito/Liquidez fornecida pelo parceiro).', sinergia: 'Utiliza o Royal IA Labs (DeFi Score) para mitigar o risco de crédito e determinar os limites.' },
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Wallet', icon: '📱', focoPrincipal: 'Carteira Digital Multichain', propostaValor: 'Custódia e segurança para ativos (incluindo $RLP).', sinergia: 'Recebe os Payouts forçados da Crypto Desk, atuando como primeiro ponto de ativação do cliente no Bankless.' },
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Pay', icon: '💸', focoPrincipal: 'Pagamentos e Remessas', propostaValor: 'Solução de pagamentos instantâneos (Pix, crypto) e transferências rápidas.', sinergia: 'Gera volume de transação (TTV) que é um KPI para o $RLP Launch Gate.' },
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Earn', icon: '📈', focoPrincipal: 'Geração de Renda (Yield)', propostaValor: 'Oferece rendimento sobre ativos parados (Ex: Poupança em Dólar/USDC) de forma competitiva.', sinergia: 'Otimizado pelo Royal IA Labs (Otimização de Yield) para garantir o melhor retorno e risco.' },
+                    { group: 'Serviços Financeiros Core', nome: 'Royal Swap/Bridge', icon: '🔗', focoPrincipal: 'Liquidez Multichain', propostaValor: 'Facilita a troca e a movimentação de ativos entre diferentes blockchains (Solana e outras).', sinergia: 'Essencial para a flexibilidade e para a futura listagem do $RLP.' },
+                    { group: 'Royal Token Labs', nome: 'Property Tokens', icon: '🏠', focoPrincipal: 'Tokenização de Imóveis (RWA)', propostaValor: 'Permite investimento fracionado em Real Estate com alta liquidez e acessibilidade.', sinergia: 'Utiliza a segurança jurídica do RL.Legal e o capital da Royal Ventures para o lastro.' },
+                    { group: 'Royal Token Labs', nome: 'Xstocks & PreStocks', icon: '🚀', focoPrincipal: 'Tokenização de Ações e Pré-IPO', propostaValor: 'Negociação fracionada e 24/7 de ativos globais (EUA, Pré-IPO).', sinergia: 'Abre o Bankless para investidores não-cripto. Usa a IA para precificação contínua.' },
+                    { group: 'Royal Token Labs', nome: 'Tokens Lastrados', icon: '🌟', focoPrincipal: 'Lastro em Ativos Físicos', propostaValor: 'Tokens representando ativos tradicionais (Ouro, Commodities, Stablecoins).', sinergia: 'Proporciona estabilidade e confiança aos usuários do Royal Earn.' },
+                    { group: 'Royal Token Labs', nome: 'Royal ESG Tokens', icon: '🌳', focoPrincipal: 'Créditos de Carbono/Sustentabilidade', propostaValor: 'Acesso a ativos de sustentabilidade, atraindo investidores com foco em impacto social.', sinergia: 'Alinha a marca com os valores de propósito do Royal LIFE.' },
+                    { group: 'Royal Token Labs', nome: 'RLP (Protocol)', icon: '📜', focoPrincipal: 'Token de Utilidade e Governança', propostaValor: 'Unifica o valor do ecossistema e oferece descontos, staking e poder de voto.', sinergia: 'É a espinha dorsal econômica; sua utilidade é o pilar da estratégia Phase-Gate.' }
+                ]
+            },
+            'Royal LIFE': {
+                setor: 'Marca, Bem-Estar e Lifestyle Aspiracional',
+                proposta: 'A Royal LIFE é a vertente aspiracional da Royal Labs, focada em produtos e experiências que materializam o ideal de saúde, mente, corpo e finanças que o ecossistema promove. É a extensão da marca para o universo do lifestyle premium.',
+                synergyHtml: `
+                    <div class="mt-8 bg-royal-card p-6 rounded-xl border border-gray-700">
+                        <h4 class="text-2xl font-bold mb-4">Conexões e Sinergia da Royal LIFE no Ecossistema</h4>
+                        <p class="text-gray-400 mb-6">A Royal LIFE não é apenas uma vitrine de produtos; ela fecha o ciclo de valor, ligando o sucesso financeiro ao bem-estar e à fidelidade à marca.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Bankless (Royal Rewards):</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Fidelização via Cashback:</strong> Usuários do Royal Card (Bankless) podem receber cashback em RLP ou descontos exclusivos em produtos Royal LIFE.</li>
+                                    <li><strong>Assinaturas Premium:</strong> Planos de assinatura para RL.Mind ou RL.Nutrition podem ser pagos via Bankless, gerando receita recorrente.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com RL.Emikate (CORE):</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                     <li><strong>Branding e Narrativa:</strong> O Emikate Studios é fundamental para construir a narrativa aspiracional da Royal LIFE e produzir conteúdo de marketing de alto nível.</li>
+                                     <li><strong>Identidade Visual:</strong> Garante que todos os produtos e experiências da LIFE estejam alinhados à identidade visual da Royal Labs.</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Academy:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                     <li><strong>Conteúdo Complementar:</strong> A Academy pode oferecer módulos sobre finanças pessoais e liberdade de tempo, complementando o bem-estar promovido pela LIFE.</li>
+                                     <li><strong>Eventos Conjuntos:</strong> Organização de retreats com foco em educação financeira e desenvolvimento pessoal para membros de alto nível.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal IA Labs:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Personalização do RL.App:</strong> A IA Labs desenvolve o motor de personalização para o RL.App, oferecendo recomendações de bem-estar sob medida.</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h5 class="font-semibold text-royal-accent">Com Royal Ventures:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Parcerias Estratégicas:</strong> Identificação de parceiros de alto nível para produtos/serviços da LIFE (ex: fornecedores de suplementos, locais de retiro).</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h5 class="font-semibold text-royal-accent">Com RLP Protocol:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm">
+                                    <li><strong>Tokens de Impacto:</strong> O RLP Protocol pode ser usado para tokenizar doações ou investimentos em projetos de impacto do RL.Impact, incentivando a participação da comunidade.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                subSetores: [
+                    { nome: 'RL.Wear', icon: '👕', focoPrincipal: 'Moda e Vestuário Premium', propostaValor: 'Oferece peças de vestuário minimalistas, esportivas e techwear que refletem a estética da marca Royal Labs.', objetivoEstrategico: 'Branding e Pertencimento: Criar um senso de identidade e lealdade à marca através de produtos tangíveis e de alta qualidade.', conexoesEssenciais: 'RL.Emikate (Design), Royal Bankless (Royal Rewards/Cashback).' },
+                    { nome: 'RL.Mind', icon: '🧘', focoPrincipal: 'Desenvolvimento Pessoal', propostaValor: 'Conteúdo, workshops e programas focados em mental health, inteligência emocional e biohacking da mente.', objetivoEstrategico: 'Bem-Estar Integral: Promover o equilíbrio mental e a alta performance cognitiva dos membros do ecossistema.', conexoesEssenciais: 'Royal Academy (Cursos/Mentorias), Royal IA Labs (Personalização).' },
+                    { nome: 'RL.Nutrition', icon: '💊', focoPrincipal: 'Suplementos e Nutrição', propostaValor: 'Linha de suplementos, smart coffees e produtos de nutrição voltados para otimização da saúde e performance.', objetivoEstrategico: 'Performance Física: Apoiar a saúde e vitalidade, alinhado ao conceito de biohacking do corpo.', conexoesEssenciais: 'RL.Emikate (Branding), Royal Bankless (Assinaturas).' },
+                    { nome: 'RL.Retreats', icon: '✈️', focoPrincipal: 'Experiências Imersivas', propostaValor: 'Retiros exclusivos, viagens e eventos focados em bem-estar, networking e desenvolvimento pessoal em locais premium.', objetivoEstrategico: 'Fidelização e Status: Oferecer experiências únicas de alto valor, reforçando o caráter premium e exclusivo da marca.', conexoesEssenciais: 'Confraria Crypto (Mastermind), Royal Ventures (Parcerias).' },
+                    { nome: 'RL.Impact', icon: '🌱', focoPrincipal: 'Projetos Sociais/Filantropia', propostaValor: 'Iniciativas e projetos com impacto social e ambiental, alinhados aos valores da Royal Labs.', objetivoEstrategico: 'Propósito e Reputação: Fortalecer a imagem da marca como socialmente responsável e engajada com causas relevantes.', conexoesEssenciais: 'RL.Legal (Governança), RLP Protocol (Tokenização de Impacto).' },
+                    { nome: 'RL.App', icon: '📱', focoPrincipal: 'Aplicativo de Bem-Estar', propostaValor: 'Aplicativo com IA para acompanhamento diário de hábitos, rotinas de mindfulness e metas de saúde.', objetivoEstrategico: 'Engajamento Contínuo: Manter o usuário conectado à filosofia LIFE, oferecendo ferramentas personalizadas de bem-estar.', conexoesEssenciais: 'Royal IA Labs (Motor de IA), RL.Flow (CRM).' }
+                ]
+            },
+        },
+        internas: {
+            'ROYAL LABS CO. (Holding)': {
+                setor: 'Holding & Governança Estratégica',
+                proposta: 'Controladora do grupo, responsável pela direção estratégica, alocação de capital e governança corporativa de todo o ecossistema.',
+                subSetores: [
+                     { nome: 'Diretoria Executiva', icon: '👑', descricao: 'Define a visão e as metas de longo prazo para todas as verticais.' },
+                     { nome: 'Relações com Investidores', icon: '💼', descricao: 'Gerencia a comunicação e o relacionamento com sócios e investidores.' },
+                ]
+            },
+            'Royal Ventures': {
+                setor: 'Investimento e Capital Estratégico',
+                proposta: 'Gestão de investimentos de risco, captação de recursos e incubação de projetos.',
+                subSetores: [
+                    { nome: 'Alocação de Capital', icon: '📈', descricao: 'Investimentos em projetos internos e externos de baixo a alto risco.' },
+                    { nome: 'Captação de Recursos', icon: '🤝', descricao: 'Busca por sócios, investidores e parceiros estratégicos.' },
+                ]
+            },
+            'Royal Cube': {
+                setor: 'Incubadora & Validação de Negócios',
+                proposta: 'Ambiente de testes para novas ideias e tecnologias, validando modelos de negócio (SAAS/BAAS) antes da escala e desenvolvimento B2B.',
+                subSetores: [
+                    { nome: 'Prototipagem Rápida', icon: '💡', descricao: 'Desenvolvimento e teste de MVPs (Minimum Viable Products).' },
+                    { nome: 'Análise de Mercado', icon: '📊', descricao: 'Validação da demanda e do potencial de mercado para novos produtos.' },
+                ]
+            },
+            'Royal IA Labs': {
+                setor: 'Inteligência Artificial e Automação',
+                proposta: 'Desenvolvimento de modelos de IA para otimização, gestão de risco e análise preditiva.',
+                subSetores: [
+                    { nome: 'Otimização de Yield', icon: '⚙️', descricao: 'Modelos para gestão de risco e otimização de rendimento no Royal Earn.' },
+                    { nome: 'DeFi Score', icon: '🛡️', descricao: 'Sistema de pontuação de crédito Web3, essencial para o Royal Credit.' },
+                    { nome: 'Análise de Mercado', icon: '🔍', descricao: 'Modelos preditivos para a Royal Crypto Desk e Academy.' },
+                ]
+            },
+            'RLP (Protocol)': {
+                setor: 'Governança, Utilidade e Lastro do Ecossistema',
+                proposta: 'O Royal Protocol (RLP) é o token nativo de utilidade e governança da Royal Labs Co. Ele será lançado como um ativo deflacionário, lastreado pelo fluxo de caixa e pela base de usuários ativa de todas as verticais, consolidando o valor do ecossistema.',
+                subSetores: [ // Renomeado para subSetores para consistência
+                    { nome: 'Token de Utilidade', icon: '💎', focoPrincipal: 'Descontos, Acessos, Staking', propostaValor: 'Oferece benefícios tangíveis e exclusivos dentro de todas as verticais da Royal Labs.', objetivoEstrategico: 'Criar Demanda Genuína: Incentivar o uso e a retenção do token através de utilities reais no ecossistema.' },
+                    { nome: 'Token de Governança', icon: '🗳️', focoPrincipal: 'Voto em Decisões Chave', propostaValor: 'Permite que holders participem de decisões sobre o futuro do ecossistema (e.g., alocação de tesouraria, novas integrações).', objetivoEstrategico: 'Descentralização Progressiva: Promover a participação da comunidade e alinhar incentivos a longo prazo.' },
+                    { nome: 'Lastro em Fluxo de Caixa', icon: '💵', focoPrincipal: 'Valor Intríseco Real', propostaValor: 'Diferente de tokens especulativos, o RLP é sustentado pelo desempenho financeiro das verticais operacionais.', objetivoEstrategico: 'Estabilidade e Confiança: Mitigar a volatilidade do mercado cripto, oferecendo um ativo com fundamentos econômicos robustos.' },
+                    { nome: 'Phase-Gate Strategy', icon: '🏁', focoPrincipal: 'Lançamento Controlado', propostaValor: 'O RLP será lançado apenas após o sucesso e demanda comprovada das Verticais Operacionais (Fase 0).', objetivoEstrategico: 'Garantir a Longevidade: Evitar um lançamento prematuro, assegurando que o token tenha valor intrínseco desde o dia zero.' },
+                    { nome: 'Infraestrutura Solana', icon: '⚡', focoPrincipal: 'Velocidade e Custo Baixo', propostaValor: 'Utiliza a blockchain Solana para transações rápidas e eficientes, otimizando a experiência do usuário.', objetivoEstrategico: 'Escalabilidade: Suportar um grande volume de transações e a futura tokenização de RWAs.' }
+                ],
+                utilidadesHtml: `
+                    <div class="mt-8 bg-royal-card p-6 rounded-xl border border-gray-700">
+                        <h4 class="text-2xl font-bold mb-4">Utilidades Chave do RLP no Ecossistema</h4>
+                        <p class="text-gray-400 mb-6">A utilidade do RLP é a força motriz de sua demanda e valor:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Royal Bankless:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1 mt-2">
+                                    <li><strong>Desconto de Taxas:</strong> Staking de RLP para reduzir taxas no Royal Card, Royal Pay, Royal Swap.</li>
+                                    <li><strong>Acesso Premium:</strong> Taxas preferenciais no Royal Earn ou acesso a fundos de maior rendimento.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Royal Crypto Desk:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1 mt-2">
+                                    <li><strong>Desconto em Desafios:</strong> Redução no custo de inscrição em desafios de trading.</li>
+                                    <li><strong>Melhores Splits:</strong> Pequeno aumento na porcentagem de lucro para holders de RLP de alto nível.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Royal Academy:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1 mt-2">
+                                     <li><strong>Acesso a Conteúdo Premium:</strong> Desbloqueio de cursos, mentorias ou módulos exclusivos.</li>
+                                     <li><strong>Votação em Temas:</strong> Governança sobre os próximos temas de cursos ou eventos.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-royal-accent">Royal Token Labs:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1 mt-2">
+                                    <li><strong>Prioridade em RWAs:</strong> Early access a novas ofertas de Property Tokens, Xstocks, etc.</li>
+                                    <li><strong>Governança de Alocação:</strong> Votar na alocação de fundos para novos ativos tokenizados.</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h5 class="font-semibold text-royal-accent">Royal Life:</h5>
+                                <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1 mt-2">
+                                    <li><strong>Descontos Exclusivos:</strong> Preços especiais em produtos RL.Wear, RL.Nutrition, eventos.</li>
+                                    <li><strong>Royal Rewards:</strong> Ganhos de RLP como cashback ou recompensa.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                faseGateHtml: `
+                     <div class="mt-8 bg-royal-card p-6 rounded-xl border border-gray-700">
+                        <h4 class="text-2xl font-bold mb-4">Phase-Gate Strategy para o Lançamento do RLP</h4>
+                        <p class="text-gray-400 mb-6">O RLP não será lançado para financiar o desenvolvimento, mas sim como uma consolidação do valor já criado.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-royal-card border-l-4 border-royal-accent/50 rounded-r-lg">
+                                <h5 class="font-semibold">Phase 0 (Fundação)</h5>
+                                <p class="text-sm text-gray-400">Foco no crescimento das verticais de geração de caixa (Crypto Desk, Bankless) e construção da comunidade (Academy). Sem RLP.</p>
+                            </div>
+                             <div class="p-4 bg-royal-card border-l-4 border-yellow-400/50 rounded-r-lg">
+                                <h5 class="font-semibold">Launch Gate (Validação)</h5>
+                                <p class="text-sm text-gray-400">Critérios de desempenho claros (ex: X clientes ativos no Bankless, Y TTV na Crypto Desk, lucratividade das verticais) devem ser atingidos.</p>
+                            </div>
+                             <div class="p-4 bg-royal-card border-l-4 border-green-400/50 rounded-r-lg">
+                                <h5 class="font-semibold">Phase 1 (Lançamento RLP)</h5>
+                                <p class="text-sm text-gray-400">Lançamento do token com utilidade imediata, auditoria de segurança completa e listagem em exchanges Tier 1.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'Royal CORE': {
+                setor: 'Gestão Corporativa e Operacional',
+                proposta: 'Centraliza a governança, compliance e suporte para a escala eficiente de todo o ecossistema.',
+                subSetores: [
+                    { nome: 'RL.Strategy', icon: '🧭', escopoPrincipal: 'Planejamento estratégico, análise de mercado e validação de novos projetos.', funcaoNoCore: 'Define o direcionamento de crescimento e garante a viabilidade das inovações.', objetivo: 'Visão de Longo Prazo: Alinhar todas as verticais aos objetivos globais da holding.', conexoes: 'RL.Legal, RL.FinCore, RL.Team, RL.Growth.' },
+                    { nome: 'RL.Legal', icon: '⚖️', escopoPrincipal: 'Compliance, jurídico corporativo e regulamentação (Web3, FinTech).', funcaoNoCore: 'Garante a segurança jurídica do grupo, protege ativos e assegura conformidade.', objetivo: 'Mitigação de Risco: Proteger a empresa e suas verticais de desafios legais e regulatórios.', conexoes: 'RL.Strategy, RL.FinCore, RL.Flow (Tech).' },
+                    { nome: 'RL.FinCore', icon: '💰', escopoPrincipal: 'Gestão financeira, contabilidade, fiscal e controle orçamentário.', funcaoNoCore: 'Centraliza as operações financeiras, relatórios e gestão de tesouraria do grupo.', objetivo: 'Saúde Financeira: Assegurar a sustentabilidade e otimização dos recursos financeiros da holding.', conexoes: 'RL.Strategy, RL.Legal, RL.Flow.' },
+                    { nome: 'RL.Team', icon: '👥', escopoPrincipal: 'Recrutamento, cultura organizacional, gestão de performance e bem-estar.', funcaoNoCore: 'Desenvolve e retém talentos, e promove uma cultura de alta performance e engajamento.', objetivo: 'Excelência Humana: Construir e manter uma equipe coesa e eficiente para todas as verticais.', conexoes: 'Todas as verticais (para RH), RL.Strategy, RL.Growth.' },
+                    { 
+                        nome: 'RL.Growth', 
+                        icon: '📈', 
+                        escopoPrincipal: 'Estratégia de expansão de mercado, parcerias e performance comercial (geral).',
+                        funcaoNoCore: 'Lidera o crescimento das verticais, identifica oportunidades e otimiza funis de vendas.',
+                        objetivo: 'Expansão Sustentável: Acelerar a aquisição de clientes e a receita em todas as empresas do grupo.',
+                        conexoes: 'RL.Flow, RL.Emikate, RL.Strategy, Verticais (Crypto Desk, Bankless).',
+                        children: [
+                            { nome: 'RL.Sales', icon: '💼', escopoPrincipal: 'Execução comercial direta, relacionamento com clientes e gestão de leads.', objetivo: 'Maximização da Receita: Otimizar a performance de vendas e o engajamento direto com os clientes.', conexoes: 'RL.Growth, RL.Flow, Royal Academy, Royal Crypto Desk, Royal Bankless.' },
+                        ] 
+                    },
+                    { 
+                        nome: 'RL.Emikate', 
+                        icon: '🎯', 
+                        escopoPrincipal: 'Branding, comunicação estratégica, gestão de tráfego pago e identidade visual.',
+                        funcaoNoCore: 'Define a identidade e voz da marca Royal Labs e de suas verticais, e atrai o público.',
+                        objetivo: 'Força da Marca & Geração de Leads: Construir uma imagem forte e coesa e gerar demanda qualificada para as verticais.',
+                        conexoes: 'RL.Growth, RL.Flow, Royal Life, Todas as Verticais.',
+                        children: [
+                             { nome: 'RL.Mídia', icon: '✍️', escopoPrincipal: 'Produção de conteúdo (textual, visual, audiovisual), campanhas e gestão de redes sociais.', objetivo: 'Engajamento e Tráfego: Gerar valor e atrair público para as verticais e para a marca Royal Labs.', conexoes: 'RL.Emikate, RL.Growth, Royal Academy.' },
+                        ] 
+                    },
+                    { 
+                        nome: 'RL.Flow', 
+                        icon: '🔁', 
+                        escopoPrincipal: 'CRM, automações de marketing/vendas, integrações de sistemas e gestão de dados (guarda-chuva).',
+                        funcaoNoCore: 'Otimiza o fluxo de trabalho, personaliza a jornada do cliente e centraliza informações cruciais para o grupo.',
+                        objetivo: 'Eficiência Operacional: Aumentar a produtividade, automatizar processos e melhorar a experiência do cliente e a tomada de decisão.',
+                        conexoes: 'RL.Growth, RL.Emikate, Todas as Verticais (para CRM).',
+                        children: [
+                             { nome: 'RL.Tech', icon: '💻', escopoPrincipal: 'Desenvolvimento de software (interno), infraestrutura de TI, segurança de dados e suporte técnico.', objetivo: 'Infraestrutura Robusta: Garantir a estabilidade, segurança e capacidade tecnológica da holding.', conexoes: 'RL.Flow, RL.Data, Royal Cube, Royal IA Labs, Todas as Verticais (para suporte).' },
+                             { nome: 'RL.Data', icon: '📊', escopoPrincipal: 'Coleta, tratamento, análise e visualização de dados estratégicos (BI).', objetivo: 'Decisão Inteligente: Suportar a tomada de decisão estratégica com base em análises de dados precisas e em tempo real.', conexoes: 'RL.Flow, RL.Tech, RL.Growth, Royal IA Labs, Todas as Verticais.' }
+                        ] 
+                    },
+                ]
+            },
+        }
+    };
+
+    // Objeto da Aplicação
+    const app = {
+        activeTab: 'publicas',
+        activeRLPTab: 'Tokenomics Completo',
+        activeSubSetorIndex: 0, // Guarda o índice do card ativo
+
+        // Nova função para definir o card ativo e re-renderizar
+        setActiveSubSetor: function(verticalName, index) {
+            this.activeSubSetorIndex = index;
+            this.renderVerticalDetail(verticalName);
+        },
+
+        // Helper para buscar dados de uma vertical em qualquer categoria
+        getVerticalData: function(verticalName) {
+            let data = ECOSYSTEM_DATA.publicas[verticalName];
+            if (!data) {
+                data = ECOSYSTEM_DATA.internas[verticalName];
+            }
+            return data;
+        },
+
+        // Função para controlar o acordeão
+        toggleAccordion: function(element) {
+            const content = element.nextElementSibling;
+            const arrow = element.querySelector('.accordion-arrow');
+            content.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        },
+        
+        // Função para alternar o tema
+        toggleTheme: function() {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        },
+
+        // 1. Renderiza o conteúdo principal baseado na aba ativa
+        setActiveTab: function(tabName) {
+            this.activeTab = tabName;
+            this.activeSubSetorIndex = 0; // Reseta o índice ao trocar de aba principal
+            this.renderMainContent();
+            
+            // Atualiza o estado visual das abas
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.id === `tab-btn-${tabName}`) {
+                    btn.classList.add('active');
+                }
+            });
+        },
+
+        // 2. Renderiza o conteúdo principal
+        renderMainContent: function() {
+            const container = document.getElementById('main-content-container');
+            if (this.activeTab === 'publicas' || this.activeTab === 'internas') {
+                container.innerHTML = this.renderOverview(this.activeTab);
+                const defaultVertical = Object.keys(ECOSYSTEM_DATA[this.activeTab])[0];
+                this.renderVerticalDetail(defaultVertical); 
+            } else if (this.activeTab === 'synergy') {
+                container.innerHTML = this.renderSynergy();
+            }
+        },
+
+        // 3. Renderiza o conteúdo da aba de visão geral (Públicas ou Internas)
+        renderOverview: function(category) {
+            const title = category === 'publicas' ? 'Verticais Públicas (Captação de Clientes)' : 'Verticais Internas (Estrutura e Inovação)';
+            const overviewHTML = `
+                <h2 class="text-3xl font-bold accent-text mb-6">${title}</h2>
+                <div id="vertical-cards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    ${this.renderVerticalCards(category)}
+                </div>
+
+                <div id="detalhe-ecossistema" class="bg-royal-card p-6 rounded-xl shadow-2xl space-y-8 mt-10">
+                    <h3 class="text-2xl font-bold accent-text">Detalhes da Vertical</h3>
+                    <div id="vertical-detail-container">
+                        <p class="text-gray-400 text-lg">Clique em qualquer pilar acima para ver os Sub-Setores e Produtos detalhados.</p>
+                    </div>
+                </div>
+            `;
+            return overviewHTML;
+        },
+
+        // 4. Renderiza os cartões de Verticais para uma categoria específica
+        renderVerticalCards: function(category) {
+            let cardsHTML = '';
+            const dataToRender = ECOSYSTEM_DATA[category];
+            Object.keys(dataToRender).forEach(verticalName => {
+                const data = dataToRender[verticalName];
+                cardsHTML += `
+                    <div class="vertical-card p-4 rounded-xl shadow-md cursor-pointer h-full flex flex-col" onclick="app.renderVerticalDetail('${verticalName}')">
+                        <h3 class="text-xl font-semibold accent-text mb-1">${verticalName}</h3>
+                        <p class="text-sm mb-2">${data.setor}</p>
+                        <p class="text-xs mt-auto">${data.proposta.substring(0, 80)}...</p>
+                    </div>
+                `;
+            });
+            return cardsHTML;
+        },
+
+        // 5. Renderiza o detalhe (Sub-Setores) ao clicar
+        renderVerticalDetail: function(verticalName) {
+            const detailContainer = document.getElementById('vertical-detail-container');
+            const data = this.getVerticalData(verticalName);
+            
+            if (!data) return;
+
+            // Lógica de Grid/Detalhe para as verticais públicas e RLP/CORE
+            if (['Royal Crypto Desk', 'Royal Academy', 'Royal Bankless', 'Royal LIFE', 'RLP (Protocol)', 'Royal CORE'].includes(verticalName)) {
+                
+                let components = data.subSetores;
+
+                const activeComponent = components[this.activeSubSetorIndex];
+                let detailsList = '';
+                
+                if (activeComponent) {
+                    // Constrói a lista de detalhes baseado nas propriedades disponíveis
+                    if(activeComponent.group) detailsList += `<li><strong class="text-royal-accent block mb-1">Grupo:</strong> ${activeComponent.group}</li>`;
+                    if(activeComponent.focoPrincipal) detailsList += `<li><strong class="text-royal-accent block mb-1">Foco Principal:</strong> ${activeComponent.focoPrincipal}</li>`;
+                    if(activeComponent.propostaValor) detailsList += `<li><strong class="text-royal-accent block mb-1">Proposta de Valor:</strong> ${activeComponent.propostaValor}</li>`;
+                    if(activeComponent.sinergia) detailsList += `<li><strong class="text-royal-accent block mb-1">Sinergia:</strong> ${activeComponent.sinergia}</li>`;
+                    if(activeComponent.objetivoFunil) detailsList += `<li><strong class="text-royal-accent block mb-1">Objetivo no Funil de Valor:</strong> ${activeComponent.objetivoFunil}</li>`;
+                    if(activeComponent.conexoesEstrategicas) detailsList += `<li><strong class="text-royal-accent block mb-1">Conexões Estratégicas:</strong> ${activeComponent.conexoesEstrategicas}</li>`;
+                    if(activeComponent.conexoesEssenciais) detailsList += `<li><strong class="text-royal-accent block mb-1">Conexões Essenciais:</strong> ${activeComponent.conexoesEssenciais}</li>`;
+                    if(activeComponent.objetivoEstrategico) detailsList += `<li><strong class="text-royal-accent block mb-1">Objetivo Estratégico:</strong> ${activeComponent.objetivoEstrategico}</li>`;
+                    if(activeComponent.mitigacaoRisco) detailsList += `<li><strong class="text-royal-accent block mb-1">Mitigação de Risco:</strong> ${activeComponent.mitigacaoRisco}</li>`;
+                    if(activeComponent.escopoPrincipal) detailsList += `<li><strong class="text-royal-accent block mb-1">Escopo Principal:</strong> ${activeComponent.escopoPrincipal}</li>`;
+                    if(activeComponent.funcaoNoCore) detailsList += `<li><strong class="text-royal-accent block mb-1">Função no CORE:</strong> ${activeComponent.funcaoNoCore}</li>`;
+                    if(activeComponent.conexoes) detailsList += `<li><strong class="text-royal-accent block mb-1">Conexões Internas:</strong> ${activeComponent.conexoes}</li>`;
+                }
+                
+
+                // Tratamento especial para children em Royal CORE
+                let childrenHTML = '';
+                if(verticalName === 'Royal CORE' && activeComponent && activeComponent.children) {
+                    childrenHTML = activeComponent.children.map(child => `
+                         <div class="mt-4 bg-royal-card p-4 rounded-xl border border-gray-700">
+                             <h5 class="text-lg font-semibold mb-3">${child.icon} ${child.nome}</h5>
+                             <ul class="list-none space-y-4 text-sm">
+                                <li><strong class="text-royal-accent block mb-1">Escopo Principal:</strong> ${child.escopoPrincipal}</li>
+                                <li><strong class="text-royal-accent block mb-1">Objetivo:</strong> ${child.objetivo}</li>
+                                <li><strong class="text-royal-accent block mb-1">Conexões:</strong> ${child.conexoes}</li>
+                             </ul>
+                        </div>
+                    `).join('');
+                    childrenHTML = `<div class="mt-6 border-t border-gray-700 pt-4"><h4 class="text-lg font-semibold text-gray-200 mb-2">Sub-Setores:</h4>${childrenHTML}</div>`;
+                }
+
+                const subSetorDetailHTML = activeComponent ? `
+                    <div class="mt-8 bg-royal-card p-6 rounded-xl border border-gray-700">
+                        <h4 class="text-2xl font-bold mb-4">${activeComponent.icon} ${activeComponent.nome}</h4>
+                        <ul class="list-none space-y-4">
+                            ${detailsList}
+                        </ul>
+                        ${childrenHTML}
+                    </div>
+                ` : '';
+
+                // --- Caso especial para Royal Bankless com 2 Grids ---
+                if (verticalName === 'Royal Bankless') {
+                     const coreServices = data.subSetores.filter(s => s.group === 'Serviços Financeiros Core');
+                    const tokenLabs = data.subSetores.filter(s => s.group === 'Royal Token Labs');
+
+                    const generateGrid = (components) => {
+                        return components.map(sub => {
+                            const index = data.subSetores.findIndex(item => item.nome === sub.nome && item.group === sub.group);
+                            const isActive = index === this.activeSubSetorIndex;
+                            const activeClass = isActive ? 'active' : '';
+                            return `
+                                <div class="sub-setor-card rounded-xl p-4 cursor-pointer text-center flex flex-col justify-center items-center h-36 ${activeClass}" 
+                                     onclick="app.setActiveSubSetor('${verticalName}', ${index})">
+                                    <div class="text-4xl mb-2">${sub.icon}</div>
+                                    <h4 class="text-md font-semibold text-center">${sub.nome}</h4>
+                                </div>
+                            `;
+                        }).join('');
+                    };
+                    
+                    detailContainer.innerHTML = `
+                        <h3 class="text-2xl font-bold accent-text mb-4">${verticalName} | ${data.setor}</h3>
+                        <p class="text-lg mb-6">${data.proposta}</p>
+                        
+                        <div class="mt-8">
+                            <h4 class="text-xl font-semibold mb-2">SERVIÇOS FINANCEIROS CORE (Utility e Transações)</h4>
+                            <p class="text-sm mb-4">Focado na usabilidade diária, pagamentos e na captura de fluxo de caixa.</p>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                ${generateGrid(coreServices)}
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="text-xl font-semibold mb-2">ROYAL TOKEN LABS (Tokenização, RWA e Governança)</h4>
+                            <p class="text-sm mb-4">Focado na criação de produtos de investimento e ativos tokenizados.</p>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                ${generateGrid(tokenLabs)}
+                            </div>
+                        </div>
+
+                        ${subSetorDetailHTML}
+                    `;
+                    return;
+
+                }
+
+                // --- Layout de Grid Único para as outras verticais ---
+                 const subSetorCardsHTML = components.map((sub, index) => {
+                    const isActive = index === this.activeSubSetorIndex;
+                     const activeClass = isActive ? 'active' : '';
+                    return `
+                        <div class="sub-setor-card rounded-xl p-4 cursor-pointer text-center flex flex-col justify-center items-center h-36 ${activeClass}" 
+                             onclick="app.setActiveSubSetor('${verticalName}', ${index})">
+                            <div class="text-4xl mb-2">${sub.icon}</div>
+                            <h4 class="text-md font-semibold text-center">${sub.nome}</h4>
+                        </div>
+                    `;
+                }).join('');
+
+                let structureTitle = `<h4 class="text-xl font-semibold mb-4">Componentes:</h4>`;
+                const titles = {
+                    'Royal Crypto Desk': 'Estrutura e Operação',
+                    'Royal Academy': 'Produtos / Comunidades',
+                    'Royal LIFE': 'Produtos e Experiências',
+                    'Royal CORE': 'Estrutura Organizacional',
+                    'RLP (Protocol)': 'Posicionamento e Objetivo Estratégico',
+                };
+                if(titles[verticalName]) {
+                    structureTitle = `<h4 class="text-xl font-semibold mb-4 mt-8">${titles[verticalName]}</h4>`;
+                }
+                
+                detailContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold accent-text mb-4">${verticalName} | ${data.setor}</h3>
+                    <p class="text-lg mb-6">${data.proposta}</p>
+                    ${structureTitle}
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+                        ${subSetorCardsHTML}
+                    </div>
+                    ${subSetorDetailHTML}
+                    ${data.synergyHtml || ''}
+                    ${data.utilidadesHtml || ''}
+                    ${data.faseGateHtml || ''}
+                `;
+                return;
+            }
+
+            // --- Lógica para as OUTRAS verticais internas (layout de cards descritivos) ---
+            const subCards = data.subSetores.map(sub => `
+                <div class="sub-setor-card p-6 rounded-xl shadow-lg flex flex-col h-full">
+                    <h4 class="text-xl font-semibold mb-2"><span class="text-3xl mr-3">${sub.icon}</span>${sub.nome}</h4>
+                    <p class="text-base flex-grow">${sub.descricao || ''}</p>
+                </div>
+            `).join('');
+            
+            let gridCols = 'md:grid-cols-3';
+            
+            detailContainer.innerHTML = `
+                <h3 class="text-2xl font-bold accent-text mb-4">${verticalName} | ${data.setor}</h3>
+                <p class="text-lg mb-6">${data.proposta}</p>
+                ${data.imageUrl ? `<div class="my-6"><img src="${data.imageUrl}" alt="Imagem para ${verticalName}" class="rounded-xl w-full max-w-2xl mx-auto"></div>` : ''}
+                <h4 class="text-xl font-semibold mb-4">Produtos / Sub-Setores:</h4>
+                <div class="grid grid-cols-1 ${gridCols} gap-6">
+                    ${subCards}
+                </div>
+                ${data.synergyHtml || ''}
+            `;
+            
+            document.getElementById('detalhe-ecossistema').scrollIntoView({ behavior: 'smooth' });
+        },
+
+        // 9. Renderiza o gráfico de pizza (Chart.js)
+        renderPieChart: function() {
+            // Garante que o Chart.js está carregado antes de tentar renderizar
+            if (typeof Chart === 'undefined') {
+                setTimeout(this.renderPieChart.bind(this), 200);
+                return;
+            }
+
+            const ctx = document.getElementById('tokenomics-chart').getContext('2d');
+            
+            const data = {
+                labels: ['Ecosystem & Rewards (40%)', 'Royal Labs Reserve (30%)', 'Team & Founders (15%)', 'Private Sale (10%)', 'Public Sale (5%)'],
+                datasets: [{
+                    data: [40, 30, 15, 10, 5],
+                    backgroundColor: ['#06D6A0', '#118AB2', '#FFD166', '#EF476F', '#7F00FF'],
+                    hoverOffset: 8
+                }]
+            };
+
+            // Destrói qualquer instância anterior do gráfico para evitar erros de renderização
+            if (window.myPieChart) {
+                window.myPieChart.destroy();
+            }
+
+            window.myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#c9d1d9' }
+                        },
+                        title: { display: false }
+                    }
+                }
+            });
+        },
+
+        // 10. Renderiza o conteúdo da aba "Sinergia Estratégica & Função"
+        renderSynergy: function() {
+            const tableBody = `
+                <table class="w-full synergy-table text-left border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="p-3 text-sm font-semibold uppercase">Vertical/Subsetor</th>
+                            <th class="p-3 text-sm font-semibold uppercase">Foco Principal</th>
+                            <th class="p-3 text-sm font-semibold uppercase">Função Estratégica no Ecossistema</th>
+                            <th class="p-3 text-sm font-semibold uppercase">Pontos de Sinergia (Comunicação)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.renderSynergyRows()}
+                    </tbody>
+                </table>
+            `;
+
+            const synergyVisualsHTML = `
+                <div class="space-y-12">
+                     <div>
+                        <h3 class="text-3xl font-bold accent-text mb-6">Mapa do Ecossistema</h3>
+                        <div class="bg-royal-card p-4 rounded-xl">
+                            <!-- SVG Coded Map will go here -->
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="text-3xl font-bold accent-text mb-6">Tripé de Valor</h3>
+                        <div class="bg-royal-card p-4 rounded-xl">
+                           <!-- Coded Tripod will go here -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold accent-text mb-6">Tabela Detalhada de Sinergia</h3>
+                        ${tableBody}
+                    </div>
+                </div>
+            `;
+            return synergyVisualsHTML;
+        },
+
+        // 11. Renderiza as linhas da tabela de sinergia
+        renderSynergyRows: function() {
+            const synergyData = [
+                { vertical: 'Royal Crypto Desk', foco: 'Motor de Caixa', funcao: 'Gera receita imediata via taxas de inscrição e adquire usuários globalmente.', sinergia: 'Força a abertura de contas no **Bankless** via Payouts. Alimenta a **Academy** com Leads qualificados.' },
+                { vertical: 'Royal Academy', foco: 'Motor de Confiança', funcao: 'Converte tráfego em comunidade leal e educada, fornecendo a base para a venda.', sinergia: 'É o funil de aquisição de clientes pagantes para a **Crypto Desk**. Gera demanda por utilidade no **Bankless**.' },
+                { vertical: 'Royal Bankless', foco: 'Core Business', funcao: 'Hub de transações e retenção de clientes. Monetiza o Spread (Crypto/BRL) e o crédito.', sinergia: 'Provê a infraestrutura para o Payout da **Crypto Desk**. Seus dados alimentam o **IA Labs** para otimizar o risco de crédito.' },
+                { vertical: 'Royal Token Labs', foco: 'Lastro RWA', funcao: 'Desenvolve ativos tokenizados, criando novos produtos de investimento no Bankless.', sinergia: 'Cria produtos de *high-ticket* para o **Bankless** e exige o **RLP** para staking/governança.' },
+                { vertical: 'Royal IA Labs', foco: 'Diferencial Tech', funcao: 'Mitiga risco de crédito/yield e otimiza a performance de trade.', sinergia: 'Recebe dados do **Bankless** (transações) e da **Crypto Desk** (trade) para construir o **DeFi Score** e otimizar produtos.' },
+                { vertical: 'Royal Ventures', foco: 'Capital & Inovação', funcao: 'Financia novos projetos (Royal Cube) e garante a captação estratégica de capital.', sinergia: 'O **Royal Cube** desenvolve a infraestrutura própria (Ex: Token Labs) que substitui o White-Label do **Bankless**.' },
+                { vertical: 'Royal LIFE', foco: 'Fidelização & Marca', funcao: 'Materializa o propósito humano do grupo e cria valor aspiracional.', sinergia: 'Utiliza o **Bankless** para o sistema **Royal Rewards** (cashback em cripto) e a **Academy** para conteúdo de bem-estar.' },
+                { vertical: 'RLP (Protocol)', foco: 'Governança & Lastro', funcao: 'Unifica o valor das verticais e permite a descentralização progressiva.', sinergia: 'O staking de $RLP dá descontos em taxas no **Bankless** e acesso premium a serviços na **Academy**.' },
+                { vertical: 'Royal CORE', foco: 'Governança & Suporte', funcao: 'Centraliza a gestão, compliance e suporte para a escala eficiente de todo o ecossistema.', sinergia: 'Atua como a origem da Estratégia de Mídia (Emikate ➡️ Academy) e fornece o controle financeiro (FinCore) e jurídico (Legal) para todas as verticais.' },
+            ];
+
+            return synergyData.map(row => `
+                <tr class="hover:bg-gray-800">
+                    <td class="p-3 font-semibold accent-text">${row.vertical}</td>
+                    <td class="p-3 text-sm">${row.foco}</td>
+                    <td class="p-3 text-sm">${row.funcao}</td>
+                    <td class="p-3 text-sm text-gray-400">${row.sinergia.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')}</td>
+                </tr>
+            `).join('');
+        },
+
+        // 12. Inicializa o aplicativo
+        init: function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            this.setActiveTab('publicas');
+        }
+    };
+
+    // Inicializa a aplicação quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', () => {
+        app.init();
+    });
+</script>
+
+</body>
+</html>
